@@ -1,0 +1,115 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keyword" content="{% block keyword %}BASE_HTML{% endblock %}">
+    <meta name="description" content="{% block description %}BASE_HTML{% endblock %}">
+    <meta name="author" content="skywalker">
+    <link rel="icon" href="{% static 'lms/icons/baseIcon.png' %}">
+    <title>图书馆图书管理系统
+        {% block title %}
+        {% endblock %}
+    </title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{% static 'lms/css/base.css' %}">
+    {# 插入bass.css#}
+    <link rel="stylesheet" href="{% block css %}
+    {% endblock css %}">
+    {# css of each site   #}
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+    <img src="{% static 'lms/icons/login.png' %}"
+         width="33" height="33" class="d-inline-block align-top" alt="">
+    <a class="navbar-brand" href="#">LMS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item  {% block indexHighlight %}{% endblock %}">
+                <a class="nav-link" href="{% url 'lms:lms_index' %}">浏览 <span class="sr-only">(current)</span></a>
+            </li>
+            </li>
+            <li class="nav-item {% block commentsHighlight %}{% endblock %}">
+                <a class="nav-link" href="#">图书评论</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="http://example.com" id="userInfo" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">用户</a>
+                <div class="dropdown-menu" aria-labelledby="userInfo">
+                    <a class="dropdown-item" href="{% url 'lms:userCentre' %}">个人信息</a>
+                    <a class="dropdown-item" href="{% url 'lms:borrowHistory' %}">借阅历史</a>
+                    <a class="dropdown-item" href="{% url 'lms:subHistory' %}">预约情况</a>
+                </div>
+            </li>
+            <li class="nav-item {% block aboutHighlight %}{% endblock %}">
+                <a class="nav-link disabled" href="{% url 'lms:about' %}">关于</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" action="{% url 'lms:bookSearch' %}" method="POST">
+            {% csrf_token %}
+            <input name='keyword' class="form-control mr-sm-2" type="text" placeholder="请输入要查询的书籍" aria-label="Search">
+            <div class="form-row align-items-center">
+                <div class="col-auto my-1">
+                    <label class="mr-sm-2 sr-only" for="inlineFormCustomSelect">Preference</label>
+                    <select name='searchType' class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                        <option selected>所有</option>
+                        <option value="author">作者</option>
+                        <option value="title">标题</option>
+                        <option value="summary">简介</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+        </form>
+        {% if user.is_authenticated %}
+            <a href="{% url 'lms:logout' %}">
+                <button class="btn btn-primary">登出</button>
+            </a>
+            </div>
+        {% else %}
+            <a href="{% url 'lms:login' %}">
+                <button class="btn btn-primary">登录</button>
+            </a>
+            </div>
+        {% endif %}
+</nav>
+
+
+<main role="main" class="container">
+    {% block main_block %}
+        基础主体部分
+    {% endblock %}
+    <!-- /.container -->
+
+</main>
+<footer class="footer">
+    <div class="text-center">
+        &copy;skywalker 2018
+    </div>
+</footer>
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>

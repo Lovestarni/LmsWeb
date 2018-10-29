@@ -1,0 +1,24 @@
+.welcomeSlogan {
+    width: 80%;
+    margin: auto;
+}
+
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    padding-top: 5rem;
+    margin-bottom: 10px; /* Margin bottom by footer height */
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20px; /* Set the fixed height of the footer here */
+    line-height: 20px; /* Vertically center the text there */
+    background-color: rgba(70, 107, 125, 0.08);
+}

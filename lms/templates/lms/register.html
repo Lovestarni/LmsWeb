@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+{% extends 'lms/base.html' %}
+{% load static %}
+
+{% block title %}
+-注册
+{% endblock %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block main_block %}
+
+    {% if registerForm.errors %}
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">注册出现问了哦</h4>
+            <p>{{ registerForm.errors }}</p>
+            <hr>
+            <p class="mb-0">请再次注册</p>
+        </div>
+    {% endif %}
+    <form class="form-group registerForm" action="" method="POST">
+        {% csrf_token %}
+        <p>
+            <label for="id_username">用户名:</label>
+            <input class="form-control" type="text" name="username" maxlength="150" autofocus required
+                   id="id_username"> <small class="form-text text-muted">必填。150个字符或者更少。包含字母，数字和仅有的@/./+/-/_符号。</small>
+        </p>
+        <p>
+            <label for="id_nickyName">Nickyname:</label>
+            <input class="form-control" type="text" name="nickyName" maxlength="50"
+                   id="id_nickyName">
+        </p>
+        <p>
+            <label for="id_password1">密码:</label>
+            <input class="form-control" type="password" name="password1" required id="id_password1">
+            <small class="form-text text-muted"><ul><li>你的密码不能与其他个人信息太相似。</li><li>你的密码必须包含至少 8 个字符。</li><li>你的密码不能是大家都爱用的常见密码。</li><li>你的密码不能全部为数字。</li></ul></small>
+        </p>
+        <p><label for="id_password2">密码确认:</label>
+            <input class="form-control" type="password" name="password2" required id="id_password2">
+            <small class="form-text text-muted">为了校验，请输入与上面相同的密码。</small>
+        </p>
+        <p>
+            <label for="id_email">电子邮件地址:</label>
+            <input class="form-control" type="email" name="email" maxlength="254" id="id_email"></p>
+
+        <p>
+            <label class="form-check-label" for="id_cate">Cate:</label>
+            <input type="checkbox" name="cate" required id="id_cate">
+            <small class="form-text text-muted">勾选表明为学生用户，不勾选为教师用户</small>
+        </p>
+        <p>
+            <label for="id_faculty">Faculty:</label>
+            <input class="form-control" type="text" name="faculty" maxlength="20" required id="id_faculty">
+            <small class="form-text text-muted">请输入您的学院</small>
+        </p>
+        <button class="btn btn-primary" type="submit">注册</button>
+    </form>
+{% endblock %}

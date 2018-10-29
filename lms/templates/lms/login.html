@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+{% extends 'lms/base.html' %}
+{% load static %}
+
+{% block title %}
+-登录
+{% endblock %}
+
+{% block css %}
+    {% static 'lms/css/login.css' %}
+{% endblock %}
+
+{% block main_block %}
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <div class="text-center welcomeSlogan"><strong>{{ error }}</strong></div>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <div class="row">
+        <form class="form-signin" action="" method="POST">
+            {% csrf_token %}
+            <div class="text-center mb-4">
+                <img class="mb-4" src="{% static 'lms/icons/login.png' %}" alt="" width="72" height="72">
+                <h1 class="h3 mb-3 font-weight-normal">图书管理系统</h1>
+                {#                <p>Build form controls with floating labels via the <code>:placeholder-shown</code> pseudo-element. <a#}
+                {#                        href="https://caniuse.com/#feat=css-placeholder-shown">Works in latest Chrome, Safari, and#}
+                {#                    Firefox.</a></p>#}
+                <p> 欢迎登录,未注册请先点此<a href="{% url 'lms:register' %}">注册</a> </p>
+
+            </div>
+
+            <div class="form-label-group">
+                <input name="username" id="inputUserName" class="form-control" placeholder="请输入用户名" required=""
+                       autofocus="" type="text">
+                <label for="inputUserName">用户名</label>
+            </div>
+
+            <div class="form-label-group">
+                <input name="password" id="inputPassword" class="form-control" placeholder="请输入密码" required=""
+                       type="password">
+                <label for="inputPassword">密码</label>
+            </div>
+
+            {#      <div class="checkbox mb-3">#}
+            {#        <label>#}
+            {#          <input value="remember-me" type="checkbox"> Remember me#}
+            {#        </label>#}
+            {#      </div>#}
+            <button class="btn btn-lg btn-primary btn-block" type="submit">登录</button>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+{% extends 'lms/base.html' %}
+{% load static %}
+
+{% block title %}
+    -借阅历史
+{% endblock %}
+
+{% block css %}
+    {% static 'lms/css/borrowHistory.css' %}
+{% endblock %}
+{% block main_block %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {% if successInfo %}
+            <div class="text-center welcomeSlogan"><strong>{{ successInfo }}</strong></div>
+        {% elif failedInfo %}
+            <div class="text-center welcomeSlogan"><strong>{{ failedInfo }}</strong></div>
+        {% else %}
+            <div class="text-center welcomeSlogan"><strong>欢迎查看借阅历史,超期图书红色字体标出</strong></div>
+        {% endif %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div id="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">序号</th>
+                <th scope="col">ISBN</th>
+                <th scope="col">书名</th>
+                <th scope="col">作者</th>
+                <th scope="col">借阅时间</th>
+                <th scope="col">归还时间</th>
+                <th scope="col">动作</th>
+            </tr>
+            </thead>
+            <tbody class="no_underline">
+            {% if bookList %}
+                {% for book,borrowInfo,borrowTime in bookList %}
+                    {% if borrowTime > 60 %}{# 超期 #}
+                        <tr class="table-dark">
+                            <th class="text-danger" scope="row">{{ forloop.counter }}</th>
+                            <td class="text-danger">{{ book.isbn }}</td>
+                            <td class="text-danger">{{ book.title }}</td>
+                            <td class="text-danger">{{ book.author }}</td>
+                            <td class="text-danger">{{ borrowInfo.boDate }}</td>
+                            {% if borrowInfo.reDate %}{# 已归还 #}
+                                <td class="text-danger" id="line_through">{{ borrowInfo.reDate }}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm">
+                                        已归还
+                                    </button>
+                                </td>
+                            {% else %}
+                                <td class="text-danger" id="line_through">超期</td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm" data-toggle="modal"
+                                            data-target="#borrowModal{{ book.id }}">
+                                        归还
+                                    </button>
+
+
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="subModal{{ book.id }}" tabindex="-1" role="dialog"
+                                         aria-labelledby="subModal{{ book.id }}Label"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="subModal{{ book.id }}Label">请确认归还</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    确认要归还书籍<strong>{{ book.title }}</strong>吗？
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">取消
+                                                    </button>
+                                                    <form action="{% url 'lms:returnBook' book.id %}"
+                                                          method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name='borrowId' value="{{ borrowInfo.id }}">
+                                                        <button type="submit" class="btn btn-primary">确认</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <tr class="table">
+                            <th class="text-dark" scope="row">{{ forloop.counter }}</th>
+                            <td class="text-dark">{{ book.isbn }}</td>
+                            <td class="text-dark">{{ book.title }}</td>
+                            <td class="text-dark">{{ book.author }}</td>
+                            <td class="text-dark">{{ borrowInfo.boDate }}</td>
+                            {% if borrowInfo.reDate %}{# 已归还 #}
+                                <td class="text-dark" id="line_through">{{ borrowInfo.reDate }}{{ borrowTime }}</td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm">
+                                        已归还
+                                    </button>
+                                </td>
+                                {% else %}{# 未归还 #}
+                                <td class="text-dark" id="line_through">已借<strong>{{ borrowTime }}</strong>天</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                            data-target="#subModal{{ book.id }}">
+                                        还书
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="subModal{{ book.id }}" tabindex="-1" role="dialog"
+                                         aria-labelledby="subModal{{ book.id }}Label"
+                                         aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="subModal{{ book.id }}Label">请确认归还</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    确认要归还书籍<strong>{{ book.title }}</strong>吗？
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">取消
+                                                    </button>
+                                                    <form action="{% url 'lms:returnBook' book.id %}"
+                                                          method="post">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name='borrowId' value="{{ borrowInfo.id }}">
+                                                        <button type="submit" class="btn btn-primary">确认</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endif %}
+
+                    </tr>
+
+                {% endfor %}
+
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

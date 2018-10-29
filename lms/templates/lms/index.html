@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+{% extends 'lms/base.html' %}
+{% load static %}
+
+{% block title %}
+    -主页
+{% endblock %}
+
+{% block css %}
+    {% static 'lms/css/index.css' %}
+{% endblock %}
+{% block indexHighlight %}
+    active
+{% endblock %}
+{% block main_block %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {% if successInfo %}
+            <div class="text-center welcomeSlogan"><strong>{{ successInfo }}</strong></div>
+        {% elif failedInfo %}
+            <div class="text-center welcomeSlogan"><strong>{{ failedInfo }}</strong></div>
+        {% elif user.is_authenticated %}
+            <div class="text-center welcomeSlogan"><strong>欢迎登录图书管理系统,当前已借图书{{ user.commonuser.bookBorrow }}本,已预定图书{{ user.commonuser.bookSub }}本   </strong></div>
+        {% else %}
+            <div class="text-center welcomeSlogan"><strong>欢迎登录图书管理系统,还未登录</strong></div>
+        {% endif %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <!-- Example split danger button -->
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary">分类</button>
+        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            <span class="sr-only">Toggle Dropdown</span>
+        </button>
+        <div class="dropdown-menu">
+            {% for cate in cateList %}
+                <a class="dropdown-item" href="{% url 'lms:cateQuery' cate.id %}">{{ cate.name }}</a>
+            {% endfor %}
+            {#            <div class="dropdown-divider"></div>#}
+            {#            <a class="dropdown-item" href="#">Separated link</a>#}
+        </div>
+    </div>
+    <div id="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">序号</th>
+                <th scope="col">ISBN</th>
+                <th scope="col">书名</th>
+                <th scope="col">作者</th>
+                <th scope="col">库存数量</th>
+                <th scope="col">动作</th>
+            </tr>
+            </thead>
+            <tbody class="no_underline">
+            {% for book in bookList %}
+                {% if book.number == 0 %}
+                    <tr class="table">
+                        <th class="text-dark" scope="row">{{ forloop.counter }}</th>
+                        <td class="text-dark" id="line_through">{{ book.isbn }}</td>
+                        <td class="text-dark" id="line_through"><a
+                                href="{% url 'lms:bookDetail' book.id %}">{{ book.title }}</a></td>
+                        <td class="text-dark" id="line_through">{{ book.author }}</td>
+                        <td class="text-dark" id="line_through">{{ book.number }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#subModal{{ book.id }}">
+                                预定
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="subModal{{ book.id }}" tabindex="-1" role="dialog"
+                                 aria-labelledby="subModal{{ book.id }}Label"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="subModal{{ book.id }}Label">请确认预定</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            确认要预定书籍<strong>{{ book.title }}</strong>吗？
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">取消
+                                            </button>
+                                            <form action="{% url 'lms:subAndBo' book.id %}"
+                                                  method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="subAndBoButton" value="1">
+                                                <button type="submit" class="btn btn-primary">确认</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr class="table">
+                        <th class="text" scope="row">{{ forloop.counter }}</th>
+                        <td class="text">{{ book.isbn }}</td>
+                        <td class="text"><a
+                                href="{% url 'lms:bookDetail' book.id %}">{{ book.title }}</a></td>
+                        <td class="text">{{ book.author }}</td>
+                        <td class="text">{{ book.number }}</td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal"
+                                    data-target="#borrowModal{{ book.id }}">
+                                借阅
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="borrowModal{{ book.id }}" tabindex="-1" role="dialog"
+                                 aria-labelledby="borrowModal{{ book.id }}Label"
+                                 aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="borrowModal{{ book.id }}Label">请确认借阅</h5>
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            确认要借阅书籍<strong>{{ book.title }}</strong>吗？
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-dismiss="modal">取消
+                                            </button>
+                                            <form action="{% url 'lms:subAndBo' book.id %}"
+                                                  method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="subAndBoButton" value="0">
+                                                <button type="submit" class="btn btn-primary">确认</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

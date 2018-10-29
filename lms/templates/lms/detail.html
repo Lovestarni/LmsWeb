@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+{% extends 'lms/base.html' %}
+{% load static %}
+
+{% block title %}
+-图书详情
+{% endblock %}
+
+{% block commentsHighlight %}
+active
+{% endblock %}
+{% block css %}
+    {% static 'lms/css/detail.css' %}
+{% endblock %}
+{% block main_block %}
+    <div class="row">
+        <div class="col">
+            <img src="{{ book.cover_img.url }}" class="img-thumbnail rounded" alt="Responsive image">
+        </div>
+        <div class="col">
+            <ul class="list-group list-group-flush">
+                <br><br>
+                <li class="list-group-item">ISBN： {{ book.isbn }}</li>
+                <li class="list-group-item">书名： {{ book.title }}</li>
+                <li class="list-group-item">作者： {{ book.author }}</li>
+                <li class="list-group-item">出版社： {{ book.publisher }}</li>
+                <li class="list-group-item">出版日期: {{ book.pubdate }}</li>
+                <li class="list-group-item">页数： {{ book.pages }}</li>
+                <li class="list-group-item">定价: {{ book.price }}</li>
+            </ul>
+        </div>
+    </div>
+    <br>
+    <div class="accordion" id="accordionExample">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne"
+                            aria-expanded="true" aria-controls="collapseOne">
+                        内容简介
+                    </button>
+                </h5>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                    {{ book.summary }}
+                </div>
+            </div>
+        </div>
+        {% if book.author_intro %}
+            <div class="card">
+                <div class="card-header" id="headingTwo">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                                data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            作者简介
+                        </button>
+                    </h5>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                    <div class="card-body">
+                        {{ book.author_intro }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <form action="{% url 'lms:comment' book.id %}" method="post">
+        {% csrf_token %}
+        <button class="btn btn-primary" type="submit">提交评论</button>
+        <div class="form-group">
+            <label for="inputUserComment">输入你对本书的看法</label>
+            <textarea name="comment" class="form-control" id="inputUserComment" rows="4"
+                      placeholder="在此输入你的想法,为空提交无效"></textarea>
+        </div>
+    </form>
+    {% for comment,thisUser in commentList %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">用户：{{ thisUser.commonuser.nickyName }}</h5>
+                <p class="card-text">{{ comment.content }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

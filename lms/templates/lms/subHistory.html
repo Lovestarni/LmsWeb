@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+{% extends 'lms/base.html' %}
+{% load static %}
+
+{% block title %}
+    -预约情况
+{% endblock %}
+
+{% block css %}
+    {% static 'lms/css/subHistory.css' %}
+{% endblock %}
+{% block main_block %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {% if successInfo %}
+            <div class="text-center welcomeSlogan"><strong>{{ successInfo }}</strong></div>
+        {% elif failedInfo %}
+            <div class="text-center welcomeSlogan"><strong>{{ failedInfo }}</strong></div>
+        {% else %}
+            <div class="text-center welcomeSlogan"><strong>欢迎查看借阅历史,超期图书红色字体标出</strong></div>
+        {% endif %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div id="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-light">
+            <tr>
+                <th scope="col">序号</th>
+                <th scope="col">ISBN</th>
+                <th scope="col">书名</th>
+                <th scope="col">作者</th>
+                <th scope="col">预定时间</th>
+                <th scope="col">预定情况</th>
+            </tr>
+            </thead>
+            <tbody class="no_underline">
+            {% if bookList %}
+                {% for book,subinfo,subDate in bookList %}
+                    <tr class="table">
+                        <th class="text-dark" scope="row">{{ forloop.counter }}</th>
+                        <td class="text-dark">{{ book.isbn }}</td>
+                        <td class="text-dark" id="line_through"><a
+                                href="{% url 'lms:bookDetail' book.id %}">{{ book.title }}</a></td>
+                        <td class="text-dark">{{ book.author }}</td>
+                        <td class="text-dark">{{ subinfo.subDate }}</td>
+                        {% if subinfo.successFlag %}
+                            <td class="text-success" id="line_through">已完成</td>
+                        {% else %}
+                            <td class="text-dark" id="line_through">已预约<strong>{{ subDate }}</strong>天</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
