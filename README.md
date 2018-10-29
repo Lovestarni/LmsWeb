@@ -1,6 +1,6 @@
 # 简易图书馆管理系统
 ## 前言
-这个是大四上学期写的一个软件工程课程设计，主要涉及了Django和Sqlite3,和少量bootstrap,参考的学习资料有[Django官方文档](https://docs.djangoproject.com/zh-hans/2.1/),[bootstrap官方文档](https://getbootstrap.com/),以及B站up主[捷佳](https://space.bilibili.com/179328791/#/)的视频，做的特别好，推荐入门Django观看
+这个是2018大四上学期写的一个软件工程课程设计，主要涉及了Django和Sqlite3,和少量bootstrap,参考的学习资料有[Django官方文档](https://docs.djangoproject.com/zh-hans/2.1/),[bootstrap官方文档](https://getbootstrap.com/),以及B站up主[捷佳](https://space.bilibili.com/179328791/#/)的视频，做的特别好，推荐入门Django观看
 ## 实验课题
 学校图书馆图书管理系统：
  1. 用于学校图书馆对图书进行管理，例如图书入库、图书借还等等，借书人员仅限于学校老师和学生，老师最多借8本书，学生最多可以借6本书，一本书的借书时间不得 超过60天。
@@ -8,7 +8,7 @@
  3. 读者可以对所读图书进行评论
  
 ## 运行环境
-只在python3.6.6,Django2.1版本下运行成功
+只在python3.6.6,Django2.1版本下测试运行成功
 ## 运行步骤
 首先安装好运行环境，配置好python虚拟环境，可以不使用虚拟环境,进入LmsWeb目录
 ```
